@@ -1,21 +1,56 @@
-document.getElementById('videoUpload').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith('video/')) {
-        const videoURL = URL.createObjectURL(file);
-        addVideoToFeed(videoURL);
-    }
-});
+// app.js
 
-function addVideoToFeed(videoURL) {
-    const videoFeed = document.getElementById('videoFeed');
+// Array to store video data
+const videos = [
+    {
+        src: 'video1.mp4',
+        likes: 0,
+        comments: ['Great video!', 'Loved it!']
+    },
+    {
+        src: 'video2.mp4',
+        likes: 0,
+        comments: ['Amazing!', 'So cool!']
+    }
+];
+
+// Function to render videos
+function renderVideos() {
+    const videoFeed = document.getElementById('video-feed');
+    videoFeed.innerHTML = ''; // Clear existing content
     
-    const videoContainer = document.createElement('div');
-    videoContainer.className = 'video-container';
-    
-    const videoElement = document.createElement('video');
-    videoElement.src = videoURL;
-    videoElement.controls = true;
-    
-    videoContainer.appendChild(videoElement);
-    videoFeed.appendChild(videoContainer);
+    videos.forEach((video, index) => {
+        const videoElement = document.createElement('video');
+        videoElement.src = video.src;
+        videoElement.controls = true;
+        videoElement.dataset.index = index;
+        
+        // Create like button
+        const likeButton = document.createElement('button');
+        likeButton.textContent = `Like (${video.likes})`;
+        likeButton.onclick = () => {
+            video.likes++;
+            likeButton.textContent = `Like (${video.likes})`;
+        };
+        
+        // Create comments list
+        const commentsList = document.createElement('ul');
+        video.comments.forEach(comment => {
+            const commentItem = document.createElement('li');
+            commentItem.textContent = comment;
+            commentsList.appendChild(commentItem);
+        });
+        
+        // Append elements to the video item
+        const videoItem = document.createElement('div');
+        videoItem.className = 'video-item';
+        videoItem.appendChild(videoElement);
+        videoItem.appendChild(likeButton);
+        videoItem.appendChild(commentsList);
+        
+        videoFeed.appendChild(videoItem);
+    });
 }
+
+// Initialize the video feed
+renderVideos();
